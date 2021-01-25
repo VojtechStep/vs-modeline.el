@@ -1,4 +1,4 @@
-;;; vs-modeline.el --- Configuration for modeline    -*- lexical-binding: t; -*-
+;;; vs-modeline.el --- Pretty modeline    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020  Vojtech Stepancik
 
@@ -24,7 +24,7 @@
 ;;; Commentary:
 
 ;; This code is heavily inspired by telephone-line (https://github.com/dbordak/telephone-line/).
-;; It's purpose is to be more effective and cater to my minimal needs (no separators, no mouse keymaps).
+;; Its purpose is to be more effective and cater to my minimal needs (no separators, no mouse keymaps).
 
 ;;; Code:
 
