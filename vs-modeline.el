@@ -300,7 +300,7 @@ Should be added to `after-focus-change-function'."
     (_ " %4l:%3c "))
   (vs-modeline-evil-face))
 
-(defvar vs-modeline--left
+(defcustom vs-modeline-left
   '("%e"
     (:eval (vs-modeline-evil))
     mode-line-process
@@ -308,9 +308,15 @@ Should be added to `after-focus-change-function'."
     (:eval (vs-modeline-project-type))
     (:eval (vs-modeline-buffer-name))
     (:eval (when (buffer-modified-p) "+"))
-    (:eval (when buffer-read-only " RO"))))
+    (:eval (when buffer-read-only " RO")))
+  "A list of segments to appear on the left side of the modeline.
 
-(defvar vs-modeline--right
+For reference of the format of the segments, see documentation
+for `mode-line-format'."
+  :type '(list sexp)
+  :group 'vs-modeline)
+
+(defcustom vs-modeline-right
   '((:eval (vs-modeline-input-method))
     " "
     (:eval (vs-modeline-flycheck))
@@ -319,10 +325,15 @@ Should be added to `after-focus-change-function'."
     mode-name
     " "
     (:eval (vs-modeline-position-rel))
-    (:eval (vs-modeline-position))))
+    (:eval (vs-modeline-position)))
+  "A list of segments to appear on the right side of the modeline.
+
+See documentation for `vs-modeline-left'."
+  :type '(list sexp)
+  :group 'vs-modeline)
 
 (vs-modeline-def-segment center-fill
-  (let ((right-width (string-width (format-mode-line vs-modeline--right))))
+  (let ((right-width (string-width (format-mode-line vs-modeline-right))))
     (vs-modeline--active-propertize
      " "
      'mode-line
@@ -332,9 +343,9 @@ Should be added to `after-focus-change-function'."
 
 (defun vs-modeline--generate-modeline-format ()
   "Generate modeline format."
-  `(,@vs-modeline--left
+  `(,@vs-modeline-left
     (:eval (vs-modeline-center-fill))
-    ,@vs-modeline--right))
+    ,@vs-modeline-right))
 
 ;;;###autoload
 (define-minor-mode vs-modeline-mode
