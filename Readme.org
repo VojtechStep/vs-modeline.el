@@ -1,0 +1,43 @@
+#+TITLE: VS Modeline
+
+* Overview
+
+VS Modeline is a somehow minimalist modeline for Emacs.
+
+The design goals are to be minimally obtrusive, reasonably efficient and easy to customize.
+
+[[file:screenshots/20210125.185126.screen.png]]
+[[file:screenshots/20210125.185145.screen.png]]
+[[file:screenshots/20210125.185259.screen.png]]
+
+* Installation
+
+The package is not available on ELPA nor MELPA, so your best bet is using a package manager that can manage remote Git repositories, such as [[https://github.com/raxod502/straight.el][straight.el]].
+
+This snippet is taken from my configuration:
+
+#+begin_src emacs-lisp
+(use-package vs-modeline
+  :straight (vs-modeline :type git
+                         :host github
+                         :repo "VojtechStep/vs-modeline.el")
+  :demand t
+  :config
+  (vs-modeline-mode))
+#+end_src
+
+* Documentation
+
+The modeline integrates with evil, projectile, flycheck, org-mode, pdf-tools, and built-in Emacs functionality. For a list of available segments, search for calls to =vs-modeline-def-segment= and =vs-modeline-def-prop-segment= in [[file:vs-modeline.el]].
+
+The modeline is split into left and right parts, which are controlled by the =vs-modeline-left= and =vs-modeline-right= variables, respectively.
+
+Two helpers are provided for defining new segments.
+The =vs-modeline-def-prop-segment= accepts at minimum the name of the segment, the text to show, and the face to show it in.
+The =vs-modeline-def-segment= is more lower level, and only accepts the name of the segment and the form to be evaluated.
+See their respective documentations and usage.
+
+* Dependencies
+There are no hard dependencies for running the modeline other than Emacs. Additional packages may be required for their respective segments.
+
+The frame switching depends on features introduced in Emacs 27.1. The only version the modeline is usually tested on is a some recent checkout of the native-comp branch of Emacs.
