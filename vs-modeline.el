@@ -288,12 +288,12 @@ Should be added to `after-focus-change-function'."
                           (vs-modeline-evil-face)
                         'mode-line-inactive)))
 
-(declare-function pdf-view-current-page 'pdf-tools)
 (declare-function pdf-cache-number-of-pages 'pdf-tools)
+(declare-function image-mode-window-get 'image-mode)
 (vs-modeline-def-prop-segment position
   (pcase major-mode
     ('pdf-view-mode (format " %3s/%s "
-                            (pdf-view-current-page)
+                            (image-mode-window-get 'page)
                             (or (ignore-errors
                                   (pdf-cache-number-of-pages))
                                 "??")))
