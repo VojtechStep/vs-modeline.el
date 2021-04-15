@@ -273,14 +273,21 @@ Should be added to `after-focus-change-function'."
 (declare-function org-clock-get-clock-string 'org-clock)
 (declare-function org-clocking-p 'org-clock)
 (vs-modeline-def-segment org-clock
-  (when-let (((fboundp 'org-clock-get-clock-string))
-             ((org-clocking-p))
-             (clock (concat (org-clock-get-clock-string))))
-    (if (vs-modeline--selected-window-active-p)
-        clock
-      (propertize
-       clock
-       'face 'mode-line-inactive))))
+  (let* ((op-line (when-let*
+                      ((op (bound-and-true-p org-pomodoro-mode-line)))
+                    (and (not (string-empty-p (apply #'concat op)))
+                         (cons " " op))))
+         (oc-line (when (and (fboundp 'org-clock-get-clock-string)
+                             (org-clocking-p))
+                    (let ((oc (concat (org-clock-get-clock-string))))
+                      (and (not (string-empty-p oc)) oc))))
+         (text (or op-line oc-line)))
+    (when text
+      (if (vs-modeline--selected-window-active-p)
+          text
+        (propertize
+         text
+         'face 'mode-line-inactive)))))
 
 (vs-modeline-def-segment position-rel
   `(:propertize (-4 " %p")
