@@ -275,7 +275,10 @@ Should be added to `after-focus-change-function'."
 (vs-modeline-def-segment org-clock
   (let* ((op-line (when-let*
                       ((op (bound-and-true-p org-pomodoro-mode-line)))
-                    (and (not (string-empty-p (apply #'concat op)))
+                    (and (not (string-empty-p
+                               (if (stringp op)
+                                   op
+                                 (apply #'concat op))))
                          (cons " " op))))
          (oc-line (when (and (fboundp 'org-clock-get-clock-string)
                              (org-clocking-p))
