@@ -270,6 +270,11 @@ Should be added to `after-focus-change-function'."
                     "(sus)"
                     'vs-modeline-warning)))))
 
+(declare-function lsp-modeline--diagnostics-update-modeline 'lsp-modeline)
+(vs-modeline-def-segment lsp-diagnostics
+  (when (and (bound-and-true-p lsp-modeline-diagnostics-mode))
+    (lsp-modeline--diagnostics-update-modeline)))
+
 (declare-function org-clock-get-clock-string 'org-clock)
 (declare-function org-clocking-p 'org-clock)
 (vs-modeline-def-segment org-clock
@@ -330,6 +335,7 @@ for `mode-line-format'."
   '((:eval (vs-modeline-input-method))
     " "
     (:eval (vs-modeline-flycheck))
+    (:eval (vs-modeline-lsp-diagnostics))
     (:eval (vs-modeline-org-clock))
     " "
     mode-name
