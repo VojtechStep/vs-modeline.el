@@ -200,23 +200,31 @@ Should be added to `after-focus-change-function'."
   (vs-modeline-evil-text)
   (vs-modeline-evil-face))
 
+(defmacro vs-modeline--no-remote (&rest body)
+  "Only run BODY if the current directory is not a local file."
+  `(unless (file-remote-p default-directory)
+     ,@body))
+
 ;;; OPTIMIZE: projectile sometimes slows down buffers that are not
 ;;;           part of a project (VojtechStep 2021-01-25)
+;;; 2026-07-17: hide this segment on remote files
 (declare-function projectile-project-name 'projectile)
 (vs-modeline-def-prop-segment project-name
-  (when (fboundp 'projectile-project-name)
-    (concat " " (projectile-project-name)))
+  (vs-modeline--no-remote
+   (when (fboundp 'projectile-project-name)
+     (concat " " (projectile-project-name))))
   'vs-modeline-project)
 
 (declare-function projectile-project-type 'projectile)
 (vs-modeline-def-segment project-type
-  (when-let (((fboundp 'projectile-project-type))
-             (pt (projectile-project-type)))
-    (vs-modeline--active-propertize
-     (concat "["
-             (symbol-name pt)
-             "]")
-     'vs-modeline-project-type)))
+  (vs-modeline--no-remote
+   (when-let (((fboundp 'projectile-project-type))
+              (pt (projectile-project-type)))
+     (vs-modeline--active-propertize
+      (concat "["
+              (symbol-name pt)
+              "]")
+      'vs-modeline-project-type))))
 
 (vs-modeline-def-prop-segment buffer-name
   " %12b"
