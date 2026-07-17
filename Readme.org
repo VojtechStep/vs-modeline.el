@@ -40,4 +40,4 @@ See their respective documentations and usage.
 * Dependencies
 There are no hard dependencies for running the modeline other than Emacs. Additional packages may be required for their respective segments.
 
-The frame switching depends on features introduced in Emacs 27.1. The only version the modeline is usually tested on is a some recent checkout of the native-comp branch of Emacs.
+The frame switching depends on features introduced in Emacs 29.1. The only version the modeline is usually tested on is latest stable.

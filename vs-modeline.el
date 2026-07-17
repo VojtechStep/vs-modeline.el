@@ -6,7 +6,7 @@
 ;; URL: https://github.com/VojtechStep/vs-modeline.el
 ;; Version: 1.0.0
 ;; Keywords: convenience
-;; Package-Requires: ((emacs "27.1"))
+;; Package-Requires: ((emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -186,28 +186,15 @@ Append ARGS to the `propertize' form"
   `(vs-modeline-def-segment ,name
      (vs-modeline--active-propertize ,text ,face ,always-active ,@args)))
 
-(defvar vs-modeline--last-selected-window nil
-  "Handle to last selected window. Used for (in)activity tracking.")
-
 (defun vs-modeline--focus-change-function (&rest _)
   "Update currently focused window.
 
 Should be added to `after-focus-change-function'."
-  (setq vs-modeline--last-selected-window (vs-modeline--focused-window))
   (force-mode-line-update))
-
-(defun vs-modeline--focused-window ()
-  "Get the currently focused window."
-  (let ((new-window (and (cl-loop for f being the frames
-                                  thereis (frame-focus-state f))
-                         (selected-window))))
-    (if (and new-window (window-minibuffer-p new-window))
-        vs-modeline--last-selected-window
-      new-window)))
 
 (defun vs-modeline--selected-window-active-p ()
   "Return t if the current window is selected."
-  (eq vs-modeline--last-selected-window (selected-window)))
+  (and (frame-focus-state) (mode-line-window-selected-p)))
 
 (vs-modeline-def-prop-segment evil
   (vs-modeline-evil-text)
@@ -373,17 +360,11 @@ See documentation for `vs-modeline-left'."
       (progn
         (add-function :after after-focus-change-function
                       #'vs-modeline--focus-change-function)
-        (add-hook 'window-configuration-change-hook #'vs-modeline--focus-change-function)
-        (advice-add #'handle-switch-frame :after #'vs-modeline--focus-change-function)
-        (advice-add #'select-window :after #'vs-modeline--focus-change-function)
         (let ((format (vs-modeline--generate-modeline-format)))
           (setq-default mode-line-format format)
           (setq mode-line-format format)))
     (remove-function after-focus-change-function
                      #'vs-modeline--focus-change-function)
-    (remove-hook 'window-configuration-change-hook #'vs-modeline--focus-change-function)
-    (advice-remove #'handle-switch-frame #'vs-modeline--focus-change-function)
-    (advice-remove #'select-window #'vs-modeline--focus-change-function)
     (setq-default mode-line-format vs-modeline--old-modeline)
     (setq mode-line-format vs-modeline--old-modeline)))
 
